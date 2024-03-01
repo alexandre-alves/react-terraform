@@ -1,9 +1,28 @@
-provider "aws" {
-  region = "eu-west-1"
+terraform {
+  required_version = "0.15.5"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.44.0"
+    }
+  }
+
+  backend "s3" {}
 }
 
-variable "bucket-name" {
-  default = "IP-bucket"
+provider "aws" {
+  region  = var.aws_region
+  profile = var.aws_profile
+
+  default_tags {
+    tags = {
+      Project   = "React-CI"
+      CreatedAt = "2024-06-05"
+      ManagedBy = "Terraform"
+      Owner     = "Solid"
+    }
+  }
 }
 
 resource "aws_s3_bucket" "react_bucket" {
@@ -39,4 +58,4 @@ output "website_domain" {
 
 output "website_endpoint" {
   value = aws_s3_bucket.react_bucket.website_endpoint
-}
+}  
